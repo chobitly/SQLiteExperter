@@ -1,4 +1,4 @@
-package com.lu.sqliteexperter.util;
+package org.chobitly.sqliteexperter.util;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,36 +9,40 @@ import com.googlecode.androidannotations.annotations.RootContext;
 import com.googlecode.androidannotations.annotations.UiThread;
 
 @EBean
-public class LoadingDialogUtil {
+public class ProgressDialogUtil {
 	@RootContext
 	Context context;
 
 	ProgressDialog progressDialog;
 
-	public void show(int titleResId, int msgResId) {
-		show(context.getText(titleResId), context.getText(msgResId), false);
+	public void show(int titleResId, int max) {
+		show(context.getText(titleResId), max, false);
 	}
 
-	public void show(int titleResId, int msgResId, boolean cancelable) {
-		show(context.getText(titleResId), context.getText(msgResId),
-				cancelable);
+	public void show(int titleResId, int max, boolean cancelable) {
+		show(context.getText(titleResId), max, cancelable);
 	}
 
-	public void show(CharSequence title, CharSequence msg) {
-		show(title, msg, false);
+	public void show(CharSequence title, int max) {
+		show(title, max, false);
 	}
 
 	@UiThread
-	public void show(CharSequence title, CharSequence msg, boolean cancelable) {
+	public void show(CharSequence title, int max, boolean cancelable) {
 		if (progressDialog != null) {
 			progressDialog.dismiss();
 		}
 		progressDialog = new ProgressDialog(context);
 		progressDialog.setCancelable(cancelable);
 		progressDialog.setTitle(title);
-		progressDialog.setMessage(msg);
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		progressDialog.setMax(max);
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		progressDialog.show();
+	}
+
+	@UiThread
+	public void update(int progress) {
+		progressDialog.setProgress(progress);
 	}
 
 	public void dismiss(int resId) {

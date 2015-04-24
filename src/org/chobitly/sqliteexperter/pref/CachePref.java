@@ -1,4 +1,4 @@
-package com.lu.sqliteexperter.pref;
+package org.chobitly.sqliteexperter.pref;
 
 import com.googlecode.androidannotations.annotations.sharedpreferences.DefaultInt;
 import com.googlecode.androidannotations.annotations.sharedpreferences.DefaultString;

@@ -1,7 +1,10 @@
-package com.lu.sqliteexperter;
+package org.chobitly.sqliteexperter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.chobitly.sqliteexperter.R;
+import org.chobitly.sqliteexperter.exporter.ExporterFactory;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -26,8 +29,7 @@ import com.googlecode.androidannotations.annotations.OnActivityResult;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.googlecode.androidannotations.annotations.res.StringArrayRes;
 import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
-import com.lu.sqliteexperter.exporter.ExporterFactory;
-import com.lu.sqliteexperter.pref.CachePref_;
+import org.chobitly.sqliteexperter.pref.CachePref_;
 
 @EActivity(R.layout.activity_main)
 // @OptionsMenu(R.menu.main)

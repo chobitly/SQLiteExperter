@@ -1,11 +1,11 @@
-package com.lu.sqliteexperter.exporter;
+package org.chobitly.sqliteexperter.exporter;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 
-import com.lu.sqliteexperter.R;
+import org.chobitly.sqliteexperter.R;
 
 import android.content.Context;
 import android.database.Cursor;

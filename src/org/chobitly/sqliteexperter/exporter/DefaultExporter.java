@@ -1,11 +1,12 @@
-package com.lu.sqliteexperter.exporter;
+package org.chobitly.sqliteexperter.exporter;
+
+import org.chobitly.sqliteexperter.R;
 
 import android.content.Context;
 import android.widget.Toast;
 
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.RootContext;
-import com.lu.sqliteexperter.R;
 
 @EBean
 public class DefaultExporter extends Exporter {

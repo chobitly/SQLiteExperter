@@ -1,6 +1,9 @@
-package com.lu.sqliteexperter.exporter;
+package org.chobitly.sqliteexperter.exporter;
 
 import java.io.IOException;
+
+import org.chobitly.sqliteexperter.R;
+import org.chobitly.sqliteexperter.util.ProgressDialogUtil;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -9,8 +12,6 @@ import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.RootContext;
-import com.lu.sqliteexperter.R;
-import com.lu.sqliteexperter.util.ProgressDialogUtil;
 
 @EBean
 public class CSVExporter extends Exporter {
