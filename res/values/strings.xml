@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SQLiteExperter</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="specific_sqlite_file_path">Specific SQLite File Path:</string>
+    <string name="choose">Choose</string>
+    <string name="specific_sql">Specific Export SQL:</string>
+    <string name="specific_export_file_type">Specific Export File Type:</string>
+    <string name="specific_export_file_path">Specific Export File Path:</string>
+    <string name="please_install_file_manager">Please install a file manage App.</string>
+    <string name="under_development">Under Development</string>
+    <string name="export">Export</string>
+    <string name="exporting">Exporting&#8230;</string>
+    <string name="export_success">Export Success</string>
+    <string name="export_failed">Export Failed</string>
+    <string name="make_sure_database_right">Please make sure you choose the right SQLite database</string>
+    <string name="make_sure_sql_right">Please make sure the SQL sentence is right</string>
+    <string name="only_one_sql_supported">We are only supported one SQL setence right now</string>
+    <string name="make_sure_export_file_right">Please make sure you choose the right Export file</string>
+
+    <string-array name="export_file_types">
+        <item>JSON</item>
+        <item>XML</item>
+        <item>csv</item>
+        <item>TEXT-|</item>
+    </string-array>
+
+</resources>
