@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SQLite Exporter</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="fragment_export">Export</string>
+    <string name="fragment_history">History</string>
+</resources>

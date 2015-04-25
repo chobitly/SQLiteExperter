@@ -1,0 +1,15 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppBaseTheme" parent="android:Theme.Material" />
+
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:colorPrimary">@color/theme_primary_color</item>
+        <item name="android:colorPrimaryDark">@color/theme_primary_color</item>
+        <item name="android:colorAccent">@color/theme_accent_color</item>
+        <item name="android:navigationBarColor">@color/theme_primary_color</item>
+    </style>
+
+</resources>
