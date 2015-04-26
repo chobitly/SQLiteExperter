@@ -1,4 +1,4 @@
-package org.chobitly.sqliteexperter;
+package org.chobitly.sqliteexporter;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
@@ -10,10 +10,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TabHost;
-import android.widget.TabWidget;
-import android.widget.TextView;
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener{
@@ -30,8 +26,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         setContentView(R.layout.activity_main);
         getActionBar().setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME);
 
-        mExportFragment = ExportFragment.newInstance(null, null);
-        mHistoryFragment = HistoryFragment.newInstance(null, null);
+        mExportFragment = new ExportFragment();
+        mHistoryFragment = new HistoryFragment();
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mCollectionPagerAdapter = new CollectionPagerAdapter(getSupportFragmentManager());

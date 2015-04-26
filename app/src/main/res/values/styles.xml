@@ -1,15 +1,14 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo"/>
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar"/>
 
     <style name="AppTheme" parent="AppBaseTheme">
-        <item name="android:windowBackground">@android:color/white</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
     </style>
 
     <!-- ActionBar styles -->
-    <style name="MyActionBar" parent="android:Widget.ActionBar">
+    <style name="MyActionBar" parent="android:Widget.Holo.ActionBar">
         <item name="android:background">@color/theme_primary_color</item>
         <item name="android:titleTextStyle">@style/MyActionBarTitleText</item>
         <item name="android:backgroundStacked">@color/theme_primary_color</item>
@@ -20,4 +19,10 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="FloatingActionButton" parent="android:Widget.ImageButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
+        <item name="android:background">@drawable/fab</item>
+    </style>
 </resources>

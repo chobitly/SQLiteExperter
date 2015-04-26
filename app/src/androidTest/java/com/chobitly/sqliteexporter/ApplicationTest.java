@@ -1,4 +1,4 @@
-package sqliteexperter.chobitly.org.myapplication;
+package com.chobitly.sqliteexporter;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
