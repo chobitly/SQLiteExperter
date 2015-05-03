@@ -18,7 +18,7 @@
     <string name="only_one_sql_supported">We are only supported one SQL sentence right now</string>
     <string name="make_sure_export_file_right">Please make sure you choose the right export file path</string>
 
-    <string-array name="export_file_types">
+    <string-array name="export_file_types" translatable="false">
         <item>JSON</item>
         <item>XML</item>
         <item>csv</item>

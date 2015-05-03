@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Outline;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,6 +28,7 @@ import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.chobitly.sqliteexporter.exporter.ExporterFactory;
 import org.chobitly.sqliteexporter.pref.CachePref_;
+import org.chobitly.sqliteexporter.util.FileChooserUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,12 +139,12 @@ public class ExportFragment extends Fragment {
 
     @Click(R.id.folder_open_database)
     protected void chooseDatabasePath() {
-        showFileChooser(getText(R.string.export_database), SQLITE_FILE_SELECT_CODE);
+        FileChooserUtils.showFileChooser(this, "file/*", getText(R.string.export_database), SQLITE_FILE_SELECT_CODE);
     }
 
     @Click(R.id.folder_open_export_file)
     protected void chooseExportFilePath() {
-        showFileChooser(getText(R.string.export_file), EXPORT_FILE_SELECT_CODE);
+        FileChooserUtils.showFileChooser(this, "file/*", getText(R.string.export_file), EXPORT_FILE_SELECT_CODE);
     }
 
     /**
@@ -224,12 +224,8 @@ public class ExportFragment extends Fragment {
             return;
 
         Log.i("File Path", "uri:" + uri);
-        if (uri.getPath().startsWith(
-                Environment.getExternalStorageDirectory().getAbsolutePath())) {
-            mSQLiteFilePathView.setText(uri.getPath());
-        } else {
-            mSQLiteFilePathView.setText("");
-        }
+        String path = FileChooserUtils.getPath(getActivity(), uri);
+        mSQLiteFilePathView.setText(path == null ? "" : path);
     }
 
     @OnActivityResult(EXPORT_FILE_SELECT_CODE)
@@ -241,24 +237,7 @@ public class ExportFragment extends Fragment {
             return;
 
         Log.i("File Path", "uri:" + uri);
-        if (uri.getPath().startsWith(
-                Environment.getExternalStorageDirectory().getAbsolutePath())) {
-            mExportFilePathView.setText(uri.getPath());
-        } else {
-            mExportFilePathView.setText("");
-        }
-    }
-
-    private void showFileChooser(CharSequence title, int requestCode) {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        try {
-            startActivityForResult(Intent.createChooser(intent, title),
-                    requestCode);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getActivity(), R.string.please_install_file_manager,
-                    Toast.LENGTH_SHORT).show();
-        }
+        String path = FileChooserUtils.getPath(getActivity(), uri);
+        mExportFilePathView.setText(path == null ? "" : path);
     }
 }
