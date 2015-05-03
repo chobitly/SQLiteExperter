@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ExportFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/export_database"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:padding="@dimen/activity_text_padding" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="0dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/edittext_export_database"
+                android:layout_alignBottom="@+id/edittext_export_database"
+                style="?android:borderlessButtonStyle"
+                android:src="@drawable/ic_folder"
+                android:id="@+id/folder_open_database" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/folder_open_database"
+                android:id="@+id/edittext_export_database" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/export_sql"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:padding="@dimen/activity_text_padding" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/folder_open_database"
+            android:id="@+id/edittext_export_sql" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/export_type"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:padding="@dimen/activity_text_padding" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:id="@+id/spinner_export_file_type" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/export_file"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:padding="@dimen/activity_text_padding" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:layout_width="48dp"
+                android:layout_height="0dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/edittext_export_file"
+                android:layout_alignBottom="@+id/edittext_export_file"
+                style="?android:borderlessButtonStyle"
+                android:src="@drawable/ic_folder"
+                android:id="@+id/folder_open_export_file" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/folder_open_export_file"
+                android:id="@+id/edittext_export_file" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/fab"
+        style="@style/FloatingActionButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

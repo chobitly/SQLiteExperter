@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name" translatable="false">SQLite Exporter</string>
+    <string name="hello_world" translatable="false">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="fragment_export">Export</string>
+    <string name="fragment_history">History</string>
+    <string name="export_database">SQLite Database</string>
+    <string name="export_sql">Export SQL</string>
+    <string name="export_type">Export Type</string>
+    <string name="export_file">Export File Path</string>
+    <string name="please_install_file_manager">Please install a file manage App.</string>
+    <string name="under_development">Under Development</string>
+    <string name="exporting">Exporting&#8230;</string>
+    <string name="export_success">Export Success</string>
+    <string name="export_failed">Export Failed</string>
+    <string name="make_sure_database_right">Please make sure you choose the right SQLite database</string>
+    <string name="make_sure_sql_right">Please make sure the SQL sentence is right</string>
+    <string name="only_one_sql_supported">We are only supported one SQL sentence right now</string>
+    <string name="make_sure_export_file_right">Please make sure you choose the right export file path</string>
+
+    <string-array name="export_file_types" translatable="false">
+        <item>JSON</item>
+        <item>XML</item>
+        <item>csv</item>
+        <item>TEXT-|</item>
+    </string-array>
+</resources>
