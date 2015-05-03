@@ -10,15 +10,15 @@ import android.content.Context;
 import android.database.Cursor;
 
 /**
- * A factory which can produce instances of {@link MyTracksProviderUtils}, and
- * can be overridden for testing.
+ * A factory which can produce instances of {@link Exporter}, and can be
+ * overridden for testing.
  */
 public class ExporterFactory {
 
 	private static ExporterFactory instance = new ExporterFactory();
 
 	/**
-	 * Creates an instance of {@link MyTracksProviderUtils}.
+	 * Creates an instance of {@link Exporter}.
 	 * 
 	 * @param context
 	 *            the context

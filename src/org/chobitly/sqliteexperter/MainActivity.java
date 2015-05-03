@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
 				Environment.getExternalStorageDirectory().getAbsolutePath())) {
 			mSQLiteFilePathView.setText(uri.getPath());
 		} else {
-			mExportFilePathView.setText("");
+			mSQLiteFilePathView.setText("");
 		}
 	}
 
