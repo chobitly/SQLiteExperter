@@ -1,87 +1,264 @@
 package org.chobitly.sqliteexporter;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Outline;
+import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.widget.EditText;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.OnActivityResult;
+import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.StringArrayRes;
+import org.androidannotations.annotations.sharedpreferences.Pref;
+import org.chobitly.sqliteexporter.exporter.ExporterFactory;
+import org.chobitly.sqliteexporter.pref.CachePref_;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
+@EFragment(R.layout.fragment_export)
 public class ExportFragment extends Fragment {
+    private static final int SQLITE_FILE_SELECT_CODE = 0x000000f1;
+    private static final int EXPORT_FILE_SELECT_CODE = 0x000000f2;
     private static final long INVALID_ITEM_ID = -1;
 
     private long mItemID = INVALID_ITEM_ID;
 
-    View mFAB;
+    @StringArrayRes(R.array.export_file_types)
+    String[] TYPES;
 
-    public ExportFragment() {
-        // Required empty public constructor
-    }
+    @Pref
+    CachePref_ mCachePref;
+
+    @ViewById(R.id.fab)
+    View mFAB;
+    @ViewById(R.id.edittext_export_database)
+    EditText mSQLiteFilePathView;
+    @ViewById(R.id.edittext_export_sql)
+    EditText mSQLView;
+    @ViewById(R.id.spinner_export_file_type)
+    Spinner mExportFileTypeView;
+    @ViewById(R.id.edittext_export_file)
+    EditText mExportFilePathView;
 
     public void setItemID(long itemID) {
         this.mItemID = itemID;
-        // TODO 更新界面内容
+        // TODO 更新界面内容 loadControlsSelections
     }
 
-    public void export() {
-        // TODO 导出
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View contentView = inflater.inflate(R.layout.fragment_export, container, false);
-        mFAB = contentView.findViewById(R.id.fab);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setupFAB();
+    @AfterViews
+    protected void setupSpinner() {
+        ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+        for (int i = 0; i < TYPES.length; ++i) {
+            HashMap<String, Object> map = null;
+            map = new HashMap<>();
+            map.put("type_name", TYPES[i]);
+            list.add(map);
         }
-        mFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                export();
-            }
-        });
-        return contentView;
+        mExportFileTypeView
+                .setAdapter(new SimpleAdapter(getActivity(), list,
+                        android.R.layout.simple_list_item_1,
+                        new String[]{"type_name"},
+                        new int[]{android.R.id.text1}));
+        loadControlsSelections(mCachePref.lastSQLiteFilePath().get(), mCachePref.lastSQL().get(),
+                mCachePref.lastExportFileType().get(), mCachePref.lastExportFilePath().get());
     }
 
+    /**
+     * load last selections
+     *
+     * @param lastDatabaseFilePath
+     * @param lastSQL
+     * @param lastFileTypeSelection
+     * @param lastExportFilePath
+     */
+    private void loadControlsSelections(String lastDatabaseFilePath, String lastSQL,
+                                        int lastFileTypeSelection, String lastExportFilePath) {
+        mSQLiteFilePathView.setText(lastDatabaseFilePath == null ? "" : lastDatabaseFilePath);
+        mSQLView.setText(lastSQL == null ? "" : lastSQL);
+        mExportFileTypeView.setSelection(
+                (lastFileTypeSelection < 0 || lastFileTypeSelection >= mExportFileTypeView.getCount())
+                        ? 0 : lastFileTypeSelection);
+        mExportFilePathView.setText(lastExportFilePath == null ? "" : lastExportFilePath);
+    }
+
+    @AfterViews
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setupFAB() {
-        mFAB.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                // Or read size directly from the view's width/height
-                int size = getResources().getDimensionPixelSize(R.dimen.activity_fab_size);
-                outline.setOval(0, 0, size, size);
-            }
-        });
-        mFAB.setClipToOutline(true);
-        mFAB.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getActionMasked();
-                    /* Raise view on ACTION_DOWN and lower it on ACTION_UP. */
-                switch (action) {
-                    case MotionEvent.ACTION_DOWN:
-                        mFAB.setTranslationZ(getResources().getDimensionPixelSize(R.dimen.activity_fab_translation_z));
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        mFAB.setTranslationZ(0);
-                        break;
-                    default:
-                        break;
+    protected void setupFAB() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mFAB.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    // Or read size directly from the view's width/height
+                    int size = getResources().getDimensionPixelSize(R.dimen.activity_fab_size);
+                    outline.setOval(0, 0, size, size);
                 }
-                return false;
-            }
-        });
+            });
+            mFAB.setClipToOutline(true);
+            mFAB.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    int action = event.getActionMasked();
+                /* Raise view on ACTION_DOWN and lower it on ACTION_UP. */
+                    switch (action) {
+                        case MotionEvent.ACTION_DOWN:
+                            mFAB.setTranslationZ(getResources().getDimensionPixelSize(R.dimen.activity_fab_translation_z));
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            mFAB.setTranslationZ(0);
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
+    @Click(R.id.folder_open_database)
+    protected void chooseDatabasePath() {
+        showFileChooser(getText(R.string.export_database), SQLITE_FILE_SELECT_CODE);
+    }
+
+    @Click(R.id.folder_open_export_file)
+    protected void chooseExportFilePath() {
+        showFileChooser(getText(R.string.export_file), EXPORT_FILE_SELECT_CODE);
+    }
+
+    /**
+     * 导出
+     */
+    @Click(R.id.fab)
+    public void export() {
+        String sql = checkSQL();
+        if (!TextUtils.isEmpty(sql)) {
+            mCachePref.edit().lastSQL().put(sql)
+                    .lastSQLiteFilePath().put(mSQLiteFilePathView.getText().toString())
+                    .lastExportFileType().put(mExportFileTypeView.getSelectedItemPosition())
+                    .lastExportFilePath().put(mExportFilePathView.getText().toString())
+                    .apply();
+            try {
+                Cursor cursor = SQLiteDatabase.openDatabase(
+                        mSQLiteFilePathView.getText().toString(), null,
+                        SQLiteDatabase.OPEN_READWRITE).rawQuery(sql, null);
+                ExporterFactory.get(getActivity(),
+                        mExportFileTypeView.getSelectedItemPosition(), cursor,
+                        mExportFilePathView.getText().toString()).export();
+            } catch (SQLiteCantOpenDatabaseException e) {
+                Toast.makeText(getActivity(), R.string.make_sure_database_right,
+                        Toast.LENGTH_SHORT).show();
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), R.string.make_sure_sql_right,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * @return 如果所有输出设置都没有问题，返回可用的SQL语句，否则返回null。
+     */
+    private String checkSQL() {
+        // 检查数据库文件路径
+        if (TextUtils.isEmpty(mSQLiteFilePathView.getText().toString())) {
+            mSQLView.setError(getText(R.string.make_sure_database_right));
+            mSQLView.requestFocus();
+            return null;
+        }
+        // 检查SQL语句
+        String sql = mSQLView.getText().toString();
+        if (TextUtils.isEmpty(sql)) {
+            mSQLView.setError(getText(R.string.make_sure_sql_right));
+            mSQLView.requestFocus();
+            return null;
+        }
+        if (sql.contains(";")) {
+            if (sql.endsWith(";")) {
+                sql.substring(0, sql.length() - 2);// 去除末尾的";"
+            }
+            String[] sqls = sql.split(";");
+            if (sqls.length > 1) {
+                mSQLView.setError(getText(R.string.only_one_sql_supported));
+                mSQLView.requestFocus();
+                return null;
+            }
+        }
+        // 检查输出文件路径
+        if (TextUtils.isEmpty(mExportFilePathView.getText().toString())) {
+            mSQLView.setError(getText(R.string.make_sure_export_file_right));
+            mSQLView.requestFocus();
+            return null;
+        }
+        return sql;
+    }
+
+    @OnActivityResult(SQLITE_FILE_SELECT_CODE)
+    protected void getSQLiteFilePath(Intent data) {
+        if (data == null)
+            return;
+        Uri uri = data.getData();
+        if (uri == null)
+            return;
+
+        Log.i("File Path", "uri:" + uri);
+        if (uri.getPath().startsWith(
+                Environment.getExternalStorageDirectory().getAbsolutePath())) {
+            mSQLiteFilePathView.setText(uri.getPath());
+        } else {
+            mSQLiteFilePathView.setText("");
+        }
+    }
+
+    @OnActivityResult(EXPORT_FILE_SELECT_CODE)
+    protected void getExportFilePath(Intent data) {
+        if (data == null)
+            return;
+        Uri uri = data.getData();
+        if (uri == null)
+            return;
+
+        Log.i("File Path", "uri:" + uri);
+        if (uri.getPath().startsWith(
+                Environment.getExternalStorageDirectory().getAbsolutePath())) {
+            mExportFilePathView.setText(uri.getPath());
+        } else {
+            mExportFilePathView.setText("");
+        }
+    }
+
+    private void showFileChooser(CharSequence title, int requestCode) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, title),
+                    requestCode);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getActivity(), R.string.please_install_file_manager,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
 }
