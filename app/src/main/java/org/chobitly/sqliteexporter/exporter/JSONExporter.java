@@ -31,34 +31,33 @@ public class JSONExporter extends Exporter {
     public void export() {
         progressDialogUtil.show(R.string.exporting, cursor.getCount());
         try {
-            out.write("[\n");
+            append("[\n");
             cursor.moveToPosition(-1);// 确认移动到第一条记录之前
             while (cursor.moveToNext()) {
                 if (cursor.getPosition() > 0) {
-                    out.write(",\n");
+                    append(",\n");
                 }
                 JSONObject jsonObject = new JSONObject();
                 for (int i = 0; i < cursor.getColumnCount(); ++i) {
                     try {
                         jsonObject.put(cursor.getColumnName(i),
                                 cursor.getString(i));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    } catch (JSONException jsonE) {
+                        jsonE.printStackTrace();
                     }
                 }
                 try {
-                    out.write(jsonObject.toString(2));
+                    append(jsonObject.toString(2));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 progressDialogUtil.update(cursor.getPosition() + 1);
             }
-            out.write("\n]");
-            out.flush();
-            out.close();
+            append("\n]");
+            onExportFinish();
             progressDialogUtil.dismiss(R.string.export_success);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
             progressDialogUtil.dismiss(R.string.export_failed);
         }
     }

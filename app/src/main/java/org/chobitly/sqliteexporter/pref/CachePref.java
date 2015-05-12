@@ -1,5 +1,6 @@
 package org.chobitly.sqliteexporter.pref;
 
+import org.androidannotations.annotations.sharedpreferences.DefaultBoolean;
 import org.androidannotations.annotations.sharedpreferences.DefaultInt;
 import org.androidannotations.annotations.sharedpreferences.DefaultString;
 import org.androidannotations.annotations.sharedpreferences.SharedPref;
@@ -24,6 +25,12 @@ public interface CachePref {
      */
     @DefaultInt(0)
     public int lastExportFileType();
+
+    /**
+     * 最后一次选择的是否输出到文件
+     */
+    @DefaultBoolean(true)
+    public boolean lastExportToFile();
 
     /**
      * 最后一次选择的输出文件路径

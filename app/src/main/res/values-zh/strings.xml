@@ -15,4 +15,5 @@
     <string name="make_sure_sql_right">请确认您输入了正确的SQL语句</string>
     <string name="only_one_sql_supported">抱歉我们目前只支持单个的SQL语句</string>
     <string name="make_sure_export_file_right">请确认您输入了正确的导出文件路径</string>
+    <string name="copy">复制</string>
 </resources>

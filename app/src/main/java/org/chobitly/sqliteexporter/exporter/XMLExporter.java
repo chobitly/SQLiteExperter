@@ -30,29 +30,28 @@ public class XMLExporter extends Exporter {
     public void export() {
         progressDialogUtil.show(R.string.exporting, cursor.getCount());
         try {
-            out.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-            out.write("<root>\n");
+            append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+            append("<root>\n");
             cursor.moveToPosition(-1);// 确认移动到第一条记录之前
             while (cursor.moveToNext()) {
-                out.write("\t<record>\n");
+                append("\t<record>\n");
                 for (int i = 0; i < cursor.getColumnCount(); ++i) {
                     if (TextUtils.isEmpty(cursor.getString(i))) {
-                        out.write("\t\t<" + cursor.getColumnName(i) + "/>\n");
+                        append("\t\t<" + cursor.getColumnName(i) + "/>\n");
                     } else {
-                        out.write("\t\t<" + cursor.getColumnName(i) + ">");
-                        out.write(cursor.getString(i));
-                        out.write("</" + cursor.getColumnName(i) + ">\n");
+                        append("\t\t<" + cursor.getColumnName(i) + ">");
+                        append(cursor.getString(i));
+                        append("</" + cursor.getColumnName(i) + ">\n");
                     }
                 }
-                out.write("\t</record>\n");
+                append("\t</record>\n");
                 progressDialogUtil.update(cursor.getPosition() + 1);
             }
-            out.write("</root>");
-            out.flush();
-            out.close();
+            append("</root>");
+            onExportFinish();
             progressDialogUtil.dismiss(R.string.export_success);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
             progressDialogUtil.dismiss(R.string.export_failed);
         }
     }

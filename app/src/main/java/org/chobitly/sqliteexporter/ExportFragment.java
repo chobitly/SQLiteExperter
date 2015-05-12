@@ -17,9 +17,11 @@ import android.view.ViewOutlineProvider;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.CheckedChange;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.OnActivityResult;
@@ -59,12 +61,34 @@ public class ExportFragment extends Fragment {
     EditText mSQLView;
     @ViewById(R.id.spinner_export_file_type)
     Spinner mExportFileTypeView;
+    @ViewById(R.id.switch_export_to_file)
+    Switch mExportToFileView;
     @ViewById(R.id.edittext_export_file)
     EditText mExportFilePathView;
 
     public void setItemID(long itemID) {
         this.mItemID = itemID;
         // TODO 更新界面内容 loadControlsSelections
+    }
+
+    /**
+     * load last selections
+     *
+     * @param lastDatabaseFilePath
+     * @param lastSQL
+     * @param lastFileTypeSelection
+     * @param lastExportFilePath
+     */
+    private void loadControlsSelections(String lastDatabaseFilePath, String lastSQL,
+                                        int lastFileTypeSelection, String lastExportFilePath) {
+        mSQLiteFilePathView.setText(lastDatabaseFilePath == null ? "" : lastDatabaseFilePath);
+        mSQLView.setText(lastSQL == null ? "" : lastSQL);
+        mExportFileTypeView.setSelection(
+                (lastFileTypeSelection < 0 || lastFileTypeSelection >= mExportFileTypeView.getCount())
+                        ? 0 : lastFileTypeSelection);
+        mExportToFileView.setChecked(mCachePref.lastExportToFile().get());
+        mExportFilePathView.setEnabled(mCachePref.lastExportToFile().get());
+        mExportFilePathView.setText(lastExportFilePath == null ? "" : lastExportFilePath);
     }
 
     @AfterViews
@@ -85,23 +109,6 @@ public class ExportFragment extends Fragment {
                 mCachePref.lastExportFileType().get(), mCachePref.lastExportFilePath().get());
     }
 
-    /**
-     * load last selections
-     *
-     * @param lastDatabaseFilePath
-     * @param lastSQL
-     * @param lastFileTypeSelection
-     * @param lastExportFilePath
-     */
-    private void loadControlsSelections(String lastDatabaseFilePath, String lastSQL,
-                                        int lastFileTypeSelection, String lastExportFilePath) {
-        mSQLiteFilePathView.setText(lastDatabaseFilePath == null ? "" : lastDatabaseFilePath);
-        mSQLView.setText(lastSQL == null ? "" : lastSQL);
-        mExportFileTypeView.setSelection(
-                (lastFileTypeSelection < 0 || lastFileTypeSelection >= mExportFileTypeView.getCount())
-                        ? 0 : lastFileTypeSelection);
-        mExportFilePathView.setText(lastExportFilePath == null ? "" : lastExportFilePath);
-    }
 
     @AfterViews
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -147,6 +154,13 @@ public class ExportFragment extends Fragment {
         FileChooserUtils.showFileChooser(this, "file/*", getText(R.string.export_file), EXPORT_FILE_SELECT_CODE);
     }
 
+    @CheckedChange(R.id.switch_export_to_file)
+    protected void onExportToFileChanged(boolean checked) {
+        mExportFilePathView.setEnabled(checked);
+
+
+    }
+
     /**
      * 导出
      */
@@ -157,6 +171,7 @@ public class ExportFragment extends Fragment {
             mCachePref.edit().lastSQL().put(sql)
                     .lastSQLiteFilePath().put(mSQLiteFilePathView.getText().toString())
                     .lastExportFileType().put(mExportFileTypeView.getSelectedItemPosition())
+                    .lastExportToFile().put(mExportToFileView.isChecked())
                     .lastExportFilePath().put(mExportFilePathView.getText().toString())
                     .apply();
             try {
@@ -165,7 +180,8 @@ public class ExportFragment extends Fragment {
                         SQLiteDatabase.OPEN_READWRITE).rawQuery(sql, null);
                 ExporterFactory.get(getActivity(),
                         mExportFileTypeView.getSelectedItemPosition(), cursor,
-                        mExportFilePathView.getText().toString()).export();
+                        mExportFilePathView.getText().toString(), mExportToFileView.isChecked())
+                        .export();
             } catch (SQLiteCantOpenDatabaseException e) {
                 Toast.makeText(getActivity(), R.string.make_sure_database_right,
                         Toast.LENGTH_SHORT).show();

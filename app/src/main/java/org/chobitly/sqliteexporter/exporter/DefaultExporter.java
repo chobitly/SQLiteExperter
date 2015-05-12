@@ -3,7 +3,6 @@ package org.chobitly.sqliteexporter.exporter;
 import android.content.Context;
 import android.widget.Toast;
 
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.chobitly.sqliteexporter.R;
