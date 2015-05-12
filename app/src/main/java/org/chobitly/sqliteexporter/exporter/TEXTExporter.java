@@ -28,9 +28,9 @@ public class TEXTExporter extends Exporter {
         return context;
     }
 
-    public Exporter setup(Cursor cursor, String path, String separator) {
+    public Exporter setup(Cursor cursor, String path, boolean exportToFile, String separator) {
         this.separator = separator;
-        return super.setup(cursor, path);
+        return super.setup(cursor, path, exportToFile);
     }
 
     @Override
@@ -38,23 +38,20 @@ public class TEXTExporter extends Exporter {
     public void export() {
         progressDialogUtil.show(R.string.exporting, cursor.getCount());
         try {
-            for (int i = 0; i < cursor.getColumnCount(); ++i) {
-                out.write(cursor.getColumnName(i));
-                out.write(i == cursor.getColumnCount() - 1 ? "\n" : separator);
-            }
+            append(TextUtils.join(separator, cursor.getColumnNames()));
+            append("\n");
             cursor.moveToPosition(-1);// 确认移动到第一条记录之前
             while (cursor.moveToNext()) {
                 for (int i = 0; i < cursor.getColumnCount(); ++i) {
                     if (!TextUtils.isEmpty(cursor.getString(i))) {
-                        out.write(cursor.getString(i));
+                        append(cursor.getString(i));
                     }
-                    out.write(i == cursor.getColumnCount() - 1 ? "\n"
+                    append(i == cursor.getColumnCount() - 1 ? "\n"
                             : separator);
                 }
                 progressDialogUtil.update(cursor.getPosition() + 1);
             }
-            out.flush();
-            out.close();
+            onExportFinish();
             progressDialogUtil.dismiss(R.string.export_success);
         } catch (IOException e1) {
             e1.printStackTrace();

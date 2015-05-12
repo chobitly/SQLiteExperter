@@ -17,8 +17,8 @@ public class ExporterFactory {
      * @param context the context
      */
     public static Exporter get(Context context, int exportType, Cursor cursor,
-                               String path) {
-        return instance.newForContext(context, exportType, cursor, path);
+                               String path, boolean exportToFile) {
+        return instance.newForContext(context, exportType, cursor, path, exportToFile);
     }
 
     /**
@@ -45,18 +45,18 @@ public class ExporterFactory {
      * @param context the context
      */
     protected Exporter newForContext(Context context, int exportType,
-                                     Cursor cursor, String path) {
+                                     Cursor cursor, String path, boolean exportToFile) {
         switch (exportType) {
             case 0:
-                return JSONExporter_.getInstance_(context).setup(cursor, path);
+                return JSONExporter_.getInstance_(context).setup(cursor, path, exportToFile);
             case 1:
-                return XMLExporter_.getInstance_(context).setup(cursor, path);
+                return XMLExporter_.getInstance_(context).setup(cursor, path, exportToFile);
             case 2:
-                return CSVExporter_.getInstance_(context).setup(cursor, path);
+                return CSVExporter_.getInstance_(context).setup(cursor, path, exportToFile);
             case 3:
-                return TEXTExporter_.getInstance_(context).setup(cursor, path);
+                return TEXTExporter_.getInstance_(context).setup(cursor, path, exportToFile);
             default:
-                return DefaultExporter_.getInstance_(context).setup(cursor, path);
+                return DefaultExporter_.getInstance_(context).setup(cursor, path, exportToFile);
         }
     }
 }
